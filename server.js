@@ -25,6 +25,7 @@ function newPin() {
   }
   throw new Error("No free PINs. Try again shortly.");
 }
+
 function clean() {
   const now = Date.now();
   for (const [pin, room] of rooms) {
@@ -99,7 +100,6 @@ io.on("connection", socket => {
     const pin = socketRoom.get(socket.id);
     const room = rooms.get(pin);
     if (room?.controller === socket && room.approved && room.host.connected) {
-      // Forward only bounded, known event types. Host agent validates again.
       const allowed = ["move", "click", "key", "scroll"];
       if (payload && allowed.includes(payload.kind)) room.host.emit("remote-input", payload);
     }
