@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Remote PIN Desktop</title>
+<style>
+:root{color-scheme:dark;--bg:#0a1020;--panel:#121c31;--line:#283752;--text:#edf3ff;--muted:#99aac7;--blue:#6ea8fe;--mint:#78e4c5}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 15% 0%,#182b4b 0,transparent 45%),var(--bg);color:var(--text);font:15px/1.5 system-ui,-apple-system,Segoe UI,sans-serif}
+.wrap{max-width:1080px;margin:auto;padding:28px 20px 50px}.top{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:30px}
+.brand{display:flex;gap:12px;align-items:center;font-weight:750;letter-spacing:.2px}.logo{width:42px;height:42px;display:grid;place-items:center;border:1px solid #42618e;border-radius:13px;background:#1b3152;color:var(--mint);font-size:21px}
+.pill{font-size:12px;color:var(--mint);border:1px solid #315b58;border-radius:99px;padding:6px 10px}
+.hero{display:grid;grid-template-columns:1.1fr .9fr;gap:28px;align-items:center;margin:24px 0 32px}.eyebrow{color:var(--mint);text-transform:uppercase;font-weight:700;font-size:12px;letter-spacing:1.8px}
+h1{font-size:clamp(34px,5vw,54px);line-height:1.04;letter-spacing:-1.6px;margin:12px 0 16px}.hero p{color:var(--muted);max-width:540px}
+.preview-card,.panel{background:linear-gradient(145deg,#15223a,#10192b);border:1px solid var(--line);border-radius:20px;padding:22px;box-shadow:0 20px 60px #0002}
+.fake-screen{background:#080d18;border:1px solid #2c3e5d;border-radius:13px;padding:14px;min-height:210px;display:flex;flex-direction:column;gap:12px}
+.screenbar{display:flex;gap:5px}.dot{height:7px;width:7px;background:#4b6689;border-radius:50%}.desktop{flex:1;display:grid;grid-template-columns:1fr 1fr;gap:10px}.tile{border-radius:8px;background:linear-gradient(135deg,#1b3151,#17243b);border:1px solid #2c4568;min-height:70px}.tile:last-child{background:linear-gradient(135deg,#173c43,#1a2c40)}
+.caption{display:flex;justify-content:space-between;color:var(--muted);font-size:12px;margin-top:12px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}.panel h2{font-size:19px;margin:0 0 5px}.sub{color:var(--muted);font-size:13px;margin:0 0 18px}
+label{display:block;font-size:13px;color:#bdcce3;margin-bottom:7px}input{width:100%;background:#0b1425;color:var(--text);border:1px solid #344866;border-radius:11px;padding:13px 14px;font-size:16px;outline:none}input:focus{border-color:var(--blue);box-shadow:0 0 0 3px #6ea8fe20}
+.pin{font-size:31px;letter-spacing:12px;text-align:center;font-weight:800;font-variant-numeric:tabular-nums}.btn{width:100%;border:0;border-radius:11px;padding:13px 16px;font-weight:750;background:var(--blue);color:#091326;margin-top:12px;cursor:pointer}.btn:hover{filter:brightness(1.08)}.btn.alt{background:#233551;color:var(--text);border:1px solid #3a5275}
+.notice{margin-top:18px;padding:13px 15px;border-radius:12px;background:#101b2d;border:1px solid #273a57;color:var(--muted);font-size:12px}
+.status{margin-top:12px;font-size:13px;color:var(--mint);min-height:20px}.footer{color:#7184a4;font-size:12px;margin-top:25px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+@media(max-width:760px){.hero{grid-template-columns:1fr}.grid{grid-template-columns:1fr}.wrap{padding:20px 14px 35px}.hero{gap:18px}.top{margin-bottom:20px}}
+</style></head>
+<body><div class="wrap">
+<header class="top"><div class="brand"><div class="logo">↗</div><span>Remote<span style="color:var(--mint)">PIN</span></span></div><span class="pill">● Secure session concept</span></header>
+<section class="hero"><div><div class="eyebrow">Remote access, simplified</div><h1>Your desktop.<br>One short PIN.</h1><p>Pair with a host computer without typing an IP address. The host creates a temporary code and must approve each connection before screen sharing or control begins.</p></div>
+<div class="preview-card"><div class="fake-screen"><div class="screenbar"><i class="dot"></i><i class="dot"></i><i class="dot"></i></div><div class="desktop"><div class="tile"></div><div class="tile"></div><div class="tile" style="grid-column:1 / -1;min-height:36px"></div></div></div><div class="caption"><span>HOST DESKTOP</span><span>Waiting for approval</span></div></div></section>
+<section class="grid">
+<div class="panel"><h2>Connect to a computer</h2><p class="sub">Enter the 3-digit PIN shown by the host.</p><label for="pin">TEMPORARY PIN</label><input id="pin" class="pin" inputmode="numeric" maxlength="3" placeholder="•••" autocomplete="one-time-code"><button id="connect" class="btn">Request connection →</button><div id="connectStatus" class="status" aria-live="polite"></div></div>
+<div class="panel"><h2>Host a session</h2><p class="sub">Run the Host app on the computer you want to access.</p><div class="notice">The host agent connects outbound to your relay server, creates a short-lived PIN, and asks the person at the computer to approve each connection.</div><button id="hostInfo" class="btn alt">How to start Host</button><div id="hostStatus" class="status" aria-live="polite"></div></div>
+</section>
+<div class="notice"><strong style="color:#e7efff">Security note:</strong> A 3-digit PIN has only 1,000 combinations. This design expires PINs after 2 minutes, limits failed attempts, allows one controller at a time, and requires host approval. Deploy behind HTTPS/WSS. Do not expose a host agent to unknown users.</div>
+<footer class="footer"><span>RemotePIN · prototype interface</span><span>This page is a UI preview, not a deployed remote desktop service.</span></footer>
+</div>
+<script>
+const pin=document.getElementById('pin');
+pin.addEventListener('input',()=>pin.value=pin.value.replace(/\\D/g,'').slice(0,3));
+document.getElementById('connect').addEventListener('click',()=>{const s=document.getElementById('connectStatus');s.textContent=pin.value.length===3?'Demo only: deploy the relay server and Host agent to connect.':'Please enter all 3 digits.';});
+document.getElementById('hostInfo').addEventListener('click',()=>{document.getElementById('hostStatus').textContent='Run host/host_agent.py on the target Windows PC, enter the HTTPS relay URL, then share the temporary PIN.';});
+</script></body></html>
