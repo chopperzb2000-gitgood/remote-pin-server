@@ -26,8 +26,17 @@ pyautogui.PAUSE = 0.02
 @sio.event
 def connect():
     print("Connected to relay. Creating a temporary PIN...")
-    sio.emit("host-register", {}, callback=lambda data: print(f"Host registered. Status: {data.get('ok')}" if data else "Host registered."))
-
+    def handle_ack(data):
+        if isinstance(data, dict) and data.get("ok"):
+            pin = data.get("pin", "N/A")
+            print("\n" + "=" * 42)
+            print(f" YOUR TEMPORARY REMOTE PIN: {pin}")
+            print(" Expires in 2 minutes. Keep this window open.")
+            print("=" * 42 + "\n")
+        else:
+            print("Registration error:", data)
+    sio.emit("host-register", {}, callback=handle_ack)
+    
 @sio.on("host-pin")
 def on_host_pin(data):
     pin = data.get("pin", "N/A") if isinstance(data, dict) else "N/A"
